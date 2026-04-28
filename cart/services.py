@@ -10,15 +10,17 @@ def _session_cart(request):
 
 
 def add_to_cart(request, product, qty=1):
+    qty = max(1, int(qty))
     if request.user.is_authenticated:
-        item, _ = CartItem.objects.get_or_create(user=request.user, product=product)
-        item.quantity += qty
-        item.save()
+        item, created = CartItem.objects.get_or_create(user=request.user, product=product, defaults={'quantity': qty})
+        if not created:
+            item.quantity += qty
+            item.save(update_fields=['quantity', 'updated_at'])
         return
 
     cart = _session_cart(request)
     pid = str(product.id)
-    cart[pid] = cart.get(pid, 0) + qty
+    cart[pid] = int(cart.get(pid, 0)) + qty
     request.session.modified = True
 
 
@@ -32,7 +34,7 @@ def update_qty(request, product_id, qty):
             item.delete()
         else:
             item.quantity = qty
-            item.save()
+            item.save(update_fields=['quantity', 'updated_at'])
         return
 
     cart = _session_cart(request)
@@ -59,10 +61,11 @@ def iter_items(request):
         return
 
     cart = _session_cart(request)
-    products = Product.objects.filter(id__in=cart.keys())
+    products = Product.objects.filter(id__in=cart.keys(), is_active=True)
     for p in products:
         qty = int(cart.get(str(p.id), 0))
-        yield {'product': p, 'quantity': qty, 'subtotal': p.price * qty}
+        if qty > 0:
+            yield {'product': p, 'quantity': qty, 'subtotal': p.price * qty}
 
 
 def total_price(request):
@@ -75,14 +78,27 @@ def total_price(request):
 def merge_session_to_user(request):
     if not request.user.is_authenticated:
         return
+
     cart = request.session.get(SESSION_CART_KEY, {})
     from products.models import Product
 
     for pid, qty in cart.items():
-        product = Product.objects.filter(id=pid).first()
-        if product:
-            item, _ = CartItem.objects.get_or_create(user=request.user, product=product)
-            item.quantity += int(qty)
-            item.save()
+        product = Product.objects.filter(id=pid, is_active=True).first()
+        if not product:
+            continue
+
+        qty = max(0, int(qty))
+        if qty == 0:
+            continue
+
+        item, created = CartItem.objects.get_or_create(
+            user=request.user,
+            product=product,
+            defaults={'quantity': qty},
+        )
+        if not created:
+            item.quantity += qty
+            item.save(update_fields=['quantity', 'updated_at'])
+
     request.session[SESSION_CART_KEY] = {}
     request.session.modified = True

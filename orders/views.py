@@ -6,13 +6,14 @@ from django.db import transaction
 from django.shortcuts import redirect, render
 
 from cart.models import CartItem
-from cart.services import iter_items, total_price
+from cart.services import iter_items, merge_session_to_user, total_price
 
 from .models import Order, OrderItem
 
 
 @login_required
 def checkout(request):
+    merge_session_to_user(request)
     items = list(iter_items(request))
     if not items:
         messages.warning(request, '购物车为空，无法下单。')
