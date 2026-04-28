@@ -139,3 +139,62 @@ python manage.py migrate
 
 确认 `DEBUG=True` 且通过 `python manage.py runserver` 启动。
 
+
+
+## 7. Windows 常见报错一键修复（针对你截图里的问题）
+
+你截图里有两个核心问题：
+
+1. `requirements.txt` 找不到
+2. `manage.py` 找不到
+
+这通常是因为你在**错误目录**执行了命令。请按下面步骤操作：
+
+### 7.1 先进入正确目录
+
+在 PowerShell 执行（示例路径按你机器改）：
+
+```powershell
+cd "D:\云平台\小鱼\test-project-codex-implement-final-code-with-django"
+dir manage.py, requirements.txt
+```
+
+如果能看到这两个文件，再继续。
+
+### 7.2 激活虚拟环境并安装依赖
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip setuptools wheel
+pip install -r .\requirements.txt
+```
+
+### 7.3 如果你遇到 SSL 错误（和截图一样）
+
+使用国内镜像安装：
+
+```powershell
+pip install -r .\requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
+```
+
+### 7.4 迁移并启动
+
+```powershell
+python .\manage.py migrate
+python .\manage.py runserver
+```
+
+### 7.5 一键脚本（推荐）
+
+项目里提供了 `setup_windows.ps1`，可自动检查目录、创建 venv、安装依赖并迁移：
+
+```powershell
+.\setup_windows.ps1
+```
+
+如果网络有 SSL/证书问题，用镜像参数：
+
+```powershell
+.\setup_windows.ps1 -UseMirror
+```
