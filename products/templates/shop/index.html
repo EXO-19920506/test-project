@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>商品列表</h2>
+<div class="grid">
+{% for p in products %}
+  <article class="card">
+    <img src="{{ p.display_image }}" alt="{{ p.name }}">
+    <h3><a href="{% url 'shop:product_detail' p.id %}">{{ p.name }}</a></h3>
+    <p class="desc">{{ p.description|default:'暂无描述'|truncatechars:60 }}</p>
+    <p>价格：<strong>¥{{ p.price }}</strong></p>
+    <p>库存：{{ p.stock }}</p>
+    <form method="post" action="{% url 'cart:add_item' p.id %}">
+      {% csrf_token %}
+      <input type="number" name="qty" value="1" min="1" max="{{ p.stock }}" {% if p.stock == 0 %}disabled{% endif %}>
+      <button type="submit" {% if p.stock == 0 %}disabled{% endif %}>加入购物车</button>
+    </form>
+  </article>
+{% empty %}
+  <div class="card">
+    <h3>暂无商品</h3>
+    <p>你可以执行命令快速生成京东风格演示商品：</p>
+    <pre>python manage.py seed_products --reset</pre>
+    <p>然后刷新页面即可看到商品列表。</p>
+  </div>
+{% endfor %}
+</div>
+{% endblock %}

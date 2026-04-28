@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>我的订单</h2>
+{% for order in orders %}
+  <section>
+    <h3>订单 #{{ order.id }} - {{ order.created_at }}</h3>
+    <p>状态：{{ order.get_status_display }} / 总额：¥{{ order.total_amount }}</p>
+    <ul>
+      {% for item in order.items.all %}
+      <li>{{ item.product.name }} x {{ item.quantity }} = ¥{{ item.subtotal }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+{% empty %}
+  <p>暂无订单。</p>
+{% endfor %}
+{% endblock %}

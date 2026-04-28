@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>小鱼商城</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<header>
+  <h1><a href="/">小鱼商城</a></h1>
+  <nav>
+    <a href="/">首页</a>
+    <a href="{% url 'cart:cart_detail' %}">购物车({{ cart_item_count }})</a>
+    {% if user.is_authenticated %}
+      <a href="{% url 'orders:order_history' %}">我的订单</a>
+      <form method="post" action="{% url 'logout' %}" style="display:inline">{% csrf_token %}<button type="submit">退出</button></form>
+    {% else %}
+      <a href="{% url 'login' %}">登录</a>
+      <a href="{% url 'register' %}">注册</a>
+    {% endif %}
+  </nav>
+</header>
+<main>
+  {% for message in messages %}
+    <p class="msg">{{ message }}</p>
+  {% endfor %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>
