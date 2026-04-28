@@ -9,4 +9,4 @@ urlpatterns = [
     path('cart/', include('cart.urls')),
     path('orders/', include('orders.urls')),
     path('', include('products.urls')),
-] + static(settings.STATIC_URL, document_root=settings.BASE_DIR / 'static')
+] + static(settings.STATIC_URL, document_root=settings.BASE_DIR / 'static') + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

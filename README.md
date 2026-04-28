@@ -3,6 +3,7 @@
 这是一个可运行的 Django 电商示例项目，包含以下能力：
 
 - 用户：注册、登录、退出
+- 商品：商品名称、描述、价格、库存、图片（本地上传或图片链接）
 - 商品：商品列表、商品详情
 - 购物车：加入购物车、修改数量、删除商品、登录后保留购物车
 - 下单：从购物车创建订单、扣减库存、查看订单历史
@@ -82,7 +83,7 @@ python manage.py runserver
 1. 登录 `/admin/`
 2. 进入 **Products -> Products**
 3. 点击 **Add Product**
-4. 填写：`name / description / price / stock / image_url / is_active`
+4. 填写：`name / description / price / stock / image(可选) / image_url(可选) / is_active`
 
 然后即可在前台测试浏览、加购、下单。
 
