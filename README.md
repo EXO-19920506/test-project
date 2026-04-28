@@ -74,6 +74,16 @@ python manage.py runserver
 - 管理后台：http://127.0.0.1:8000/admin/
 - 自定义商品管理页（需管理员登录）：http://127.0.0.1:8000/manage/products/
 
+
+### Step 7: 初始化演示商品（你要的商品图文价格库存）
+
+```bash
+python manage.py seed_products --reset
+```
+
+执行后会自动导入多条商品（包含名称、描述、价格、库存、商品图片链接），首页会立即有商品可买。
+
+
 ---
 
 ## 3. 快速初始化测试数据（推荐）
@@ -199,3 +209,14 @@ python .\manage.py runserver
 ```powershell
 .\setup_windows.ps1 -UseMirror
 ```
+
+
+## 8. 一键生成商品数据（重点）
+
+如果你现在页面是空的，直接执行：
+
+```bash
+python manage.py seed_products --reset
+```
+
+这条命令会创建一批示例商品，字段完整：商品名称、描述、价格、库存、图片。

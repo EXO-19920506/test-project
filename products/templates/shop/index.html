@@ -16,7 +16,12 @@
     </form>
   </article>
 {% empty %}
-  <p>暂无商品</p>
+  <div class="card">
+    <h3>暂无商品</h3>
+    <p>你可以执行命令快速生成京东风格演示商品：</p>
+    <pre>python manage.py seed_products --reset</pre>
+    <p>然后刷新页面即可看到商品列表。</p>
+  </div>
 {% endfor %}
 </div>
 {% endblock %}

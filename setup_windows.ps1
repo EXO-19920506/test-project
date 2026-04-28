@@ -1,5 +1,6 @@
 param(
-    [switch]$UseMirror
+    [switch]$UseMirror,
+    [switch]$SeedProducts
 )
 
 $ErrorActionPreference = 'Stop'
@@ -31,5 +32,13 @@ if ($UseMirror) {
 # 5) Run migration
 python .\manage.py migrate
 
+# 6) Optional seed products
+if ($SeedProducts) {
+    python .\manage.py seed_products --reset
+}
+
 Write-Host "\n[完成] 依赖安装与数据库迁移已执行。" -ForegroundColor Green
+if ($SeedProducts) {
+    Write-Host "已初始化演示商品数据。" -ForegroundColor Green
+}
 Write-Host "启动命令: python .\manage.py runserver" -ForegroundColor Cyan
