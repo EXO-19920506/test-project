@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>确认下单</h2>
+<ul>
+{% for item in items %}
+  <li>{{ item.product.name }} x {{ item.quantity }} = ¥{{ item.subtotal }}</li>
+{% endfor %}
+</ul>
+<p>总计：¥{{ total }}</p>
+<form method="post">{% csrf_token %}<button type="submit">提交订单</button></form>
+{% endblock %}
